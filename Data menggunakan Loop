@@ -1,0 +1,11 @@
+Data = {}  
+n = int(input("Jumlah Siswa: "))
+
+for i in range(n):
+    print("----------------")
+    print(f"Mahasiswa ke-{i+1}")
+    nama = input("Nama: ")
+    nilai = int(input(f"Nilai: "))
+    Data[nama] = nilai 
+
+print(Data)
