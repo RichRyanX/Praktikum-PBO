@@ -1,0 +1,10 @@
+Nama = input("Nama: ")
+NIM = input("NIM: ")
+Resolusi = input("Resolusi: ")
+
+with open("output.txt", "w") as file:
+    file.write(f"Nama: {Nama}\n")
+    file.write(f"NIM: {NIM}\n")
+    file.write(f"Resolusi: {Resolusi}\n")
+
+print("Data telah diinput ke file")
