@@ -1,0 +1,91 @@
+# Ryanda Aditya Irawan
+# 123140144
+
+import random
+
+class game:
+    def __init__(self, name, hp, attack, accuracy, regen):
+        self.name = name
+        self.hp = hp
+        self.attack = attack
+        self.accuracy = accuracy
+        self.regen = regen
+
+    def attack_enemy(self, enemy):
+        # Jika akurasi di luar dari scope, maka attack tidak kena sasaran
+        if random.random() > self.accuracy:
+            print(f"{self.name} tidak kena sasaran")
+            return 0 
+
+        # Menentukan scope dari attacking damage
+        damage = random.randint(self.attack - 5, self.attack + 5)
+        enemy.hp -= damage
+        print(f"{self.name} menyerang {enemy.name}: {damage}")
+        return damage
+
+    # Fungsi regen health
+    def regen_health(self):
+        self.hp += self.regen
+        print(f"{self.name} regen health{self.regen} HP: {self.hp}")
+
+    # Fungsi yang mengecheck Hp
+    def is_alive(self):
+        return self.hp > 0
+
+# Fungsi yang menampilkan Hp sementara masing masing robot 
+def print_status(robot1, robot2):
+    print(f"{robot1.name}: {robot1.hp} HP")
+    print(f"{robot2.name}: {robot2.hp} HP")
+
+# Menerima inputan user tentang langkah yang akan diambil
+def get_action(robot):
+    print(f"Pilih aksi untuk {robot.name}:")
+    print("1. Attack")
+    print("2. Regenerate Health")
+    print("3. Menyerah")
+    action = int(input(f"Aksi {robot.name}: "))
+    return action
+
+def main():
+    # Membuat robot
+    robot1 = game(name="Atreus", hp=100, attack=15, accuracy=0.8, regen=10)
+    robot2 = game(name="Daedalus", hp=100, attack=12, accuracy=0.75, regen=8)
+
+    # Game akan terus berulang sampai salah satu robot kalah atau menyerah
+    round_number = 1
+    while robot1.is_alive() and robot2.is_alive():
+        print(f"--- Round {round_number} ---")
+        print_status(robot1, robot2)
+
+        # Kondisi Robot 1
+        action1 = get_action(robot1)
+        if action1 == 1:
+            robot1.attack_enemy(robot2)
+        elif action1 == 2:
+            robot1.regen_health()
+        elif action1 == 3:
+            print(f"{robot1.name} menyerah! {robot2.name} menang!")
+            break
+
+        if not robot2.is_alive():
+            print(f"{robot2.name} kalah! {robot1.name} menang!")
+            break
+
+        # Kondisi Robot 2
+        action2 = get_action(robot2)
+        if action2 == 1:
+            robot2.attack_enemy(robot1)
+        elif action2 == 2:
+            robot2.regen_health()
+        elif action2 == 3:
+            print(f"{robot2.name} menyerah! {robot1.name} menang!")
+            break
+
+        if not robot1.is_alive():
+            print(f"{robot1.name} kalah! {robot2.name} menang!")
+            break
+
+        round_number += 1
+
+if __name__ == "__main__":
+    main()
