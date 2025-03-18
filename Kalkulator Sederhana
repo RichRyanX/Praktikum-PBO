@@ -1,0 +1,65 @@
+import math
+
+class Kalkulator:
+    def __init__(self, angka):
+        self.angka = angka  
+
+    # Fungsi Penjumlahan
+    def __add__(self, other):
+        return Kalkulator(self.angka + other.angka)  
+
+    # Fungsi Pengurangan
+    def __sub__(self, other):
+        return Kalkulator(self.angka - other.angka)  
+
+    # Fungsi Perkalian
+    def __mul__(self, other):
+        return Kalkulator(self.angka * other.angka)  # Perbaikan di sini, ganti __mtp__ menjadi __mul__
+
+    # Fungsi Pembagian
+    def __truediv__(self, other):
+        if other.angka == 0:
+            raise ValueError("Tidak bisa membagi dengan nol!")
+        return Kalkulator(self.angka / other.angka)
+        
+    # Fungsi Eksponen
+    def __pow__(self, other):
+        return Kalkulator(self.angka ** other.angka)
+
+    # Fungsi Logaritma
+    def log(self):
+        if self.angka <= 0:
+            raise ValueError("Angka harus lebih besar dari nol untuk logaritma!")
+        return Kalkulator(math.log10(self.angka))
+
+    # Menampilkan nilai
+    def __str__(self):
+        return str(self.angka)
+        
+# Penggunaan Kalkulator
+angka1 = Kalkulator(5)
+angka2 = Kalkulator(2)
+
+# Penjumlahan
+hasil_tambah = angka1 + angka2
+print(f"Hasil penjumlahan: {hasil_tambah}")  
+
+# Pengurangan
+hasil_kurang = angka1 - angka2
+print(f"Hasil pengurangan: {hasil_kurang}")  
+
+# Perkalian
+hasil_kali = angka1 * angka2
+print(f"Hasil perkalian: {hasil_kali}")  
+
+# Pembagian
+hasil_bagi = angka1 / angka2
+print(f"Hasil pembagian: {hasil_bagi}")  
+
+# Eksponen
+hasil_eksponen = angka1 ** angka2
+print(f"Hasil eksponen: {hasil_eksponen}")  
+
+# Logaritma
+hasil_log = angka1.log()
+print(f"Hasil logaritma: {hasil_log}")  
