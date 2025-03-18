@@ -1,0 +1,77 @@
+import random 
+
+class Father:
+    def __init__(self, tipe_darah):
+        self.tipe_darah = tipe_darah
+
+    # Fungsi Alel Ayah
+    def get_alleles(self):
+        # Kondisi Alel Ayah
+        if self.tipe_darah == "A":
+            return ["A", "O"]  # A atau O
+        elif self.tipe_darah == "B":
+            return ["B", "O"]  # B atau O
+        elif self.tipe_darah == "AB":
+            return ["A", "B"]  # A atau B
+        elif self.tipe_darah == "O":
+            return ["O", "O"]  # Hanya O
+        else:
+            raise ValueError("Golongan darah ayah tidak valid")
+
+class Mother:
+    def __init__(self, tipe_darah):
+        self.tipe_darah = tipe_darah
+
+    # Fungsi Alel Ibu
+    def get_alleles(self):
+        # Kondisi Alel Ibu
+        if self.tipe_darah == "A":
+            return ["A", "O"]  # A atau O
+        elif self.tipe_darah == "B":
+            return ["B", "O"]  # B atau O
+        elif self.tipe_darah == "AB":
+            return ["A", "B"]  # A atau B
+        elif self.tipe_darah == "O":
+            return ["O", "O"]  # Hanya O
+        else:
+            raise ValueError("Golongan darah ibu tidak valid")
+
+class Child:
+    def __init__(self, father, mother):
+        # Class Child menerima Alel secara Acak
+        father_alel = random.choice(father.get_alleles())
+        mother_alel = random.choice(mother.get_alleles())
+        self.alel = [father_alel, mother_alel]
+
+        # Menentukan golongan darah sesuai alel yang diterima
+        self.tipe_darah = self.determine_blood_type()
+
+    def determine_blood_type(self):
+        # Menggabungkan alel untuk menentukan golongan darah
+        if "A" in self.alel and "B" in self.alel:
+            return "AB"
+        elif "A" in self.alel and "O" in self.alel:
+            return "A"
+        elif "B" in self.alel and "O" in self.alel:
+            return "B"
+        elif "O" in self.alel and "O" in self.alel:
+            return "O"
+        else:
+            return "Unknown"
+
+    def __str__(self):
+        return f"Golongan darah anak: {self.tipe_darah}"
+        
+# Menerima Input User
+father_blood = input("Golongan Darah Ayah (A, B, AB, O): ").upper()
+mother_blood = input("Golongan Darah Ayah (A, B, AB, O): ").upper()
+
+# Membuat Objek Father dan Mother
+father = Father(father_blood)
+mother = Mother(mother_blood)
+
+# Membuat objek Child
+child = Child(father, mother)
+
+# Menampilkan golongan darah anak
+print(child)
