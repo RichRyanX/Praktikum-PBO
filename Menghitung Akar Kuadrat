@@ -1,0 +1,32 @@
+# Ryanda Aditya Irawan
+# 123140144
+
+import math
+
+# Fungsi untuk menyimpan input angka dan perhitungan akar kuadrat
+def hitung_akar_kuadrat():
+    while True:
+        try:
+            user_input = input("Masukkan Angka: ")
+
+            # Check apakah input adalah angka
+            try:
+                number = float(user_input)
+            except ValueError:
+                print("Invalid input")
+                return
+
+            # Check jika input adalah angka negatif
+            if number <= 0:
+                print("Akar kuadrat dimulai dari angka 1")
+            else:
+                # Jika input adalah angka negatif maka program akan menghitung akar kuadratnya
+                akar_kuadrat = math.sqrt(number)
+                print(f"Akar kuadrat: {akar_kuadrat}")
+                break
+
+        except Exception as e:
+            print(f"An error occurred: {e}")
+
+# Memanggil fungsi
+hitung_akar_kuadrat()
