@@ -1,0 +1,169 @@
+# Ryanda Aditya Irawan
+# 123140144
+
+from abc import ABC, abstractmethod
+
+# Abstract Class animal
+class Animal(ABC):
+    def __init__(self, name, age):
+        
+        # Enkapsulasi: Data disembunyikan di dalam kelas 
+        if not name or not age:
+            raise ValueError("Invalid Input")
+        self.__name = name
+        self.__age = age
+
+    # Enkapsulasi: Get name
+    def get_name(self):
+        return self.__name
+
+    # Enkapsulasi: Fungsi untuk set name
+    def set_name(self, name):
+        if not name:
+            raise ValueError("Invalid Input")
+        self.__name = name
+
+    # Enkapsulasi: Get age
+    def get_age(self):
+        return self.__age
+
+    # Enkapsulasi: Fungsi untuk set umur
+    def set_age(self, age):
+        if age <= 0:
+            raise ValueError("Invalid Input")
+        self.__age = age
+
+    # Abstract method yang akan diimplementasikan pada kelas turunan
+    @abstractmethod
+    def make_sound(self):
+        pass
+
+# Inheritence: Class Dog turunan dari animal
+class Dog(Animal):
+    def __init__(self, name, age, breed):
+        super().__init__(name, age)
+        self.__breed = breed
+
+    def get_breed(self):
+        return self.__breed
+
+    def set_breed(self, breed):
+        self.__breed = breed
+
+    def make_sound(self):
+        return "Woof!"
+
+# Inheritence: Class Cat turunan dari animal
+class Cat(Animal):
+    def __init__(self, name, age, color):
+        super().__init__(name, age)
+        self.__color = color
+
+    def get_color(self):
+        return self.__color
+
+    def set_color(self, color):
+        self.__color = color
+
+    def make_sound(self):
+        return "Meow!"
+
+# Inheritence: Class Elephant turunan dari animal
+class Elephant(Animal):
+    def __init__(self, name, age, panjang_gading):
+        super().__init__(name, age)
+        self.__panjang_gading = panjang_gading
+
+    def get_panjang_gading(self):
+        return self.__panjang_gading
+
+    def set_panjang_gading(self, panjang_gading):
+        if panjang_gading <= 0:
+            raise ValueError("Invalid Input")
+        self.__panjang_gading = panjang_gading
+
+    def make_sound(self):
+        return "Trumpet!"
+
+# Class Zoo
+class Zoo:
+    def __init__(self):
+        self.animals = []
+
+    def add_animal(self, animal):
+        if isinstance(animal, Animal):
+            self.animals.append(animal)
+        else:
+            raise TypeError("Error")
+
+    def show_all_sounds(self):
+        if not self.animals:
+            print("Zoo kosong")
+        else:
+            for animal in self.animals:
+                print(f"Suara {animal.get_name()}: {animal.make_sound()}")
+                print("--------------------------------------------------------")
+
+# Fungsi untuk membuat objek animal
+def create_animal():
+    try:
+        name = input("Animal's name: ")
+        age = int(input("Animal's age: "))
+
+        if age <= 0:
+            raise ValueError("Umur harus lebih dari 0")
+
+        animal_type = input("Animal (dog, cat, elephant): ").lower()
+
+        if animal_type == 'dog':
+            breed = input("Dog breed: ")
+            animal = Dog(name, age, breed)
+        elif animal_type == 'cat':
+            color = input("Cat color: ")
+            animal = Cat(name, age, color)
+        elif animal_type == 'elephant':
+            panjang_gading = float(input("Panjang gading (meter): "))
+            animal = Elephant(name, age, panjang_gading)
+        else:
+            raise ValueError("Invalid Input")
+
+        return animal
+
+    # Exception saat terdapat error
+    except ValueError as e:
+        print(f"Error: {e}")
+        return None
+    except Exception as e:
+        print(f"Unexpected error: {e}")
+        return None
+
+# Main function
+def main():
+    zoo = Zoo()
+
+    while True:
+        print("== Zoo Management System ==")
+        print("1. Tambah animal")
+        print("2. Print suara animal")
+        print("3. Exit")
+        
+        choice = input("pilih option (1-3): ")
+
+        # Loop create animal 
+        if choice == "1":
+            animal = create_animal()
+            if animal:
+                zoo.add_animal(animal)
+                print(f"{animal.get_name()} telah ditambah ke dalam zoo.")
+                print("--------------------------------------------------------")
+        elif choice == "2":
+            zoo.show_all_sounds()  
+            continue  
+        elif choice == "3":
+            print("Keluar dari program")
+            break
+        else:
+            print("Invalid Input")
+
+if __name__ == "__main__":
+    main()
