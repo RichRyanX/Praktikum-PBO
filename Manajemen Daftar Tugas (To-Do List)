@@ -1,0 +1,106 @@
+# Ryanda Aditya Irawan
+# 123140144
+
+# Class exception
+class TaskError(Exception):
+    pass
+
+# Class raised jika task kosong
+class EmptyTaskError(TaskError):
+    pass
+
+# Class raised jika task tidak ditemukan
+class TaskNotFoundError(TaskError):
+    pass
+
+class TodoList:
+    def __init__(self):
+        self.tasks = []
+
+    # Fungsi menambah task
+    def add_task(self, task):
+        try:
+            # Check jika task kosong
+            if not task.strip():  # Check for empty task input
+                raise EmptyTaskError("Invalid Input")
+            # Kondisi jika task tidak kosong     
+            self.tasks.append(task)
+            print(f"'{task}' ditambahkan")
+            print("-------------------------")
+        # Jika ada error dalam EmptyTaskError
+        except EmptyTaskError as e:
+            print(f"Error: {e}")
+
+    # Fungsi menghapus task
+    def delete_task(self, task):
+        try:
+            # Check jika task tidak ada di dalam list
+            if task not in self.tasks:
+                # Kondisi jika task tidak ditemukan
+                raise TaskNotFoundError(f"'{task}' not found!")
+                print("-------------------------")
+            # Jika task ditemukan maka akan dihapus dari list
+            self.tasks.remove(task)
+            print(f"Task '{task}' dihapus")
+        # Jika ada error dalam TaskNotFoundError    
+        except TaskNotFoundError as e:
+            print(f"Error: {e}")
+
+    # Fungsi untuk print task
+    def print_tasks(self):
+        # Kondisi jika list tidak kosong
+        if self.tasks:
+            print("To-Do List:")
+            for index, task in enumerate(self.tasks, 1):
+                print(f"{index}. {task}")
+        # Kondisi jika list kosong
+        else:
+            print("List kosong")
+            print("-------------------------")
+
+def main():
+    todo_list = TodoList()
+
+    while True:
+        print("== To-Do List Menu ==:")
+        print("1. Tambah Task")
+        print("2. Hapus Task")
+        print("3. Print Tasks")
+        print("4. Exit")
+        
+        try:
+            choice = int(input("Pilih menu (1-4): "))
+            print("-------------------------")
+            
+            # Jika user input angka 1, user akan menambah task
+            if choice == 1:
+                task = input("Task: ")
+                todo_list.add_task(task)
+            
+            # Jika user input angka 1, user akan menghapus task
+            elif choice == 2:
+                task = input("Task: ")
+                todo_list.delete_task(task)
+
+            # Jika user input angka 1, user akan print task
+            elif choice == 3:
+                todo_list.print_tasks()
+            
+            # Jika user input angka 1, program akan keluar
+            elif choice == 4:
+                print("Keluar dari program")
+                break
+            
+            # Jika user input angka diluar range 1-4
+            else:
+                print("Invalid input!")
+        
+        # Jika terdapat error pada ValueError
+        except ValueError:
+            print("Invalid input!")
+        except Exception as e:
+            print(f"Error: {e}")
+        
+
+if __name__ == "__main__":
+    main()
