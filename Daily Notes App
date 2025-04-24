@@ -1,0 +1,173 @@
+import tkinter as tk
+from tkinter import messagebox, Menu, Scrollbar, END, DISABLED, NORMAL
+
+# Kelas utama Daily Note
+class DailyNoteApp:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Daily Note")
+        self.notes = {}
+
+        # Membuat menu bar file
+        menu_bar = Menu(root)
+        file_menu = Menu(menu_bar, tearoff=0)
+        file_menu.add_command(label="Keluar", command=root.quit)
+        menu_bar.add_cascade(label="File", menu=file_menu)
+
+        # Membuat menu bar bantuan
+        help_menu = Menu(menu_bar, tearoff=0)
+        help_menu.add_command(label="Tentang", command=self.show_about)
+        menu_bar.add_cascade(label="Bantuan", menu=help_menu)
+        root.config(menu=menu_bar)
+
+        # Menginput judul
+        tk.Label(root, text="Judul Catatan").pack()
+        self.judul = tk.Entry(root, width=50)
+        self.judul.pack(pady=5)
+
+        # Menginput isi catatan
+        tk.Label(root, text="Isi Catatan").pack()
+        self.isi_catatan = tk.Text(root, height=20, width=70)
+        self.isi_catatan.pack(pady=5)
+        self.isi_catatan.config(state=NORMAL)
+
+        # Membuat tombol
+        button_frame = tk.Frame(root)
+        button_frame.pack(pady=5)
+
+        # Membuat tombol "simpan catatan"
+        self.add_tombol = tk.Button(button_frame, text="Simpan Catatan", command=self.add_note)
+        self.add_tombol.pack(side=tk.LEFT, padx=5)
+
+        # Membuat tombol "perbarui catatan" atau edit mode
+        self.tombol_update = tk.Button(button_frame, text="Perbarui Catatan", command=self.enable_edit_mode)
+
+        # Membuat listbox dan scrollbar
+        list_frame = tk.Frame(root)
+        list_frame.pack(pady=5)
+        self.scrollbar = Scrollbar(list_frame)
+        self.scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+
+        self.list_catatan = tk.Listbox(list_frame, height=5, width=55, yscrollcommand=self.scrollbar.set)
+        self.list_catatan.pack(side=tk.LEFT)
+        self.list_catatan.bind("<<ListboxSelect>>", self.display_note)
+        self.scrollbar.config(command=self.list_catatan.yview)
+
+        # Membuat tombol "hapus catatan"
+        self.tombol_hapus = tk.Button(root, text="Hapus Catatan", command=self.delete_note)
+        self.tombol_hapus.pack(pady=5)
+
+    # Fungsi untuk menambahkan catatan
+    def add_note(self):
+        self.isi_catatan.config(state=NORMAL)  
+        title = self.judul.get().strip()
+        content = self.isi_catatan.get("1.0", END).strip()
+
+        # Kondisi jika judul dan isi catatan kosong
+        if not title or not content:
+            messagebox.showerror("Error 404", "Lengkapi Judul dan Isi Catatan")
+            return
+
+        # Cek jika judul catatan sudah ada
+        self.notes[title] = content
+        if title not in self.list_catatan.get(0, END):
+            self.list_catatan.insert(END, title)
+
+        # Clear input setelah menyimpan catatan
+        self.judul.delete(0, END)
+        self.isi_catatan.delete("1.0", END)
+        self.isi_catatan.config(state=DISABLED)
+        self.add_tombol.pack_forget()
+
+    # Fungsi untuk menampilkan catatan yang dipilih
+    def display_note(self, event):
+        selection = self.list_catatan.curselection()
+        if selection:
+            index = selection[0]
+            title = self.list_catatan.get(index)
+            content = self.notes.get(title, "")
+            self.judul.delete(0, END)
+            self.judul.insert(0, title)
+            self.isi_catatan.config(state=NORMAL)
+            self.isi_catatan.delete("1.0", END)
+            self.isi_catatan.insert(END, content)
+            self.isi_catatan.config(state=DISABLED)
+
+            # Untuk menampilkan tombol 
+            if not self.tombol_update.winfo_ismapped():
+                self.tombol_update.pack(side=tk.LEFT, padx=5)
+
+    # Fungsi untuk mengubah ke mode edit
+    def enable_edit_mode(self):
+        self.isi_catatan.config(state=NORMAL)
+        self.tombol_update.config(text="Simpan Perubahan", command=self.update_note)
+
+    # Fungsi untuk memperbarui catatan
+    def update_note(self):
+        selection = self.list_catatan.curselection()
+        if not selection:
+            return
+
+        # Mengambil index catatan yang dipilih
+        index = selection[0]
+        old_title = self.list_catatan.get(index)
+        new_title = self.judul.get().strip()
+        new_content = self.isi_catatan.get("1.0", END).strip()
+
+        # Kondisi jika judul dan isi catatan kosong
+        if not new_title or not new_content:
+            messagebox.showerror("Error 404", "Lengkapi Judul dan Isi Catatan")
+            return
+
+        # Cek jika judul catatan sudah ada
+        if new_title != old_title:
+            if new_title in self.notes:
+                messagebox.showerror("Duplikat Judul", "Judul catatan sudah terpakai.")
+                return
+            self.list_catatan.delete(index)
+            self.list_catatan.insert(index, new_title)
+            del self.notes[old_title]
+        else:
+            self.list_catatan.delete(index)
+            self.list_catatan.insert(index, new_title)
+
+        # Memperbarui catatan
+        self.notes[new_title] = new_content
+
+        # Clear input setelah memperbarui catatan
+        self.list_catatan.selection_clear(0, END)
+        self.judul.delete(0, END)
+        self.isi_catatan.delete("1.0", END)
+        self.isi_catatan.config(state=DISABLED)
+        self.tombol_update.config(text="Simpan Perubahan", command=self.enable_edit_mode)
+
+    # Fungsi untuk menghapus catatan
+    def delete_note(self):
+        selection = self.list_catatan.curselection()
+        if not selection:
+            return
+        index = selection[0]
+        title = self.list_catatan.get(index)
+
+        # Konfirmasi penghapusan catatan
+        confirm = messagebox.askyesno("Delete Note", f"Apakah anda yakin untuk menghapus '{title}'?")
+        if confirm:
+            self.list_catatan.delete(index)
+            if title in self.notes:
+                del self.notes[title]
+            self.judul.delete(0, END)
+            self.isi_catatan.config(state=NORMAL)
+            self.isi_catatan.delete("1.0", END)
+            self.isi_catatan.config(state=DISABLED)
+            self.tombol_update.pack_forget()
+            self.tombol_update.config(text="Perbarui Catatan", command=self.enable_edit_mode)
+
+    # Fungsi untuk menampilkan informasi tentang aplikasi
+    def show_about(self):
+        messagebox.showinfo("About", "Daily Note DN1.0 by Ryan")
+
+# Fungsi utama untuk menjalankan aplikasi
+if __name__ == "__main__":
+    root = tk.Tk()
+    app = DailyNoteApp(root)
+    root.mainloop()
